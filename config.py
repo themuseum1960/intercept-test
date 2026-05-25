@@ -418,7 +418,7 @@ LOG_FORMAT = _get_env("LOG_FORMAT", "%(asctime)s - %(levelname)s - %(message)s")
 
 # Server settings
 HOST = _get_env("HOST", "0.0.0.0")
-PORT = _get_env_int("PORT", 5050)
+PORT = _get_env_int("PORT", 6969)
 DEBUG = _get_env_bool("DEBUG", False)
 THREADED = _get_env_bool("THREADED", True)
 

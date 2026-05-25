@@ -7,7 +7,7 @@
 # Requires sudo for SDR, WiFi monitor mode, and Bluetooth access.
 #
 # Usage:
-#   sudo ./start.sh                  # Default: 0.0.0.0:5050
+#   sudo ./start.sh                  # Default: 0.0.0.0:6969
 #   sudo ./start.sh -p 8080          # Custom port
 #   sudo ./start.sh --https          # HTTPS with self-signed cert
 #   sudo ./start.sh --debug          # Debug mode (Flask dev server)
@@ -35,7 +35,7 @@ fi
 
 # ── Defaults (can be overridden by env vars or CLI flags) ────────────────────
 HOST="${INTERCEPT_HOST:-0.0.0.0}"
-PORT="${INTERCEPT_PORT:-5050}"
+PORT="${INTERCEPT_PORT:-6969}"
 DEBUG=0
 HTTPS=0
 CHECK_DEPS=0
@@ -67,7 +67,7 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: start.sh [OPTIONS]"
             echo ""
             echo "Options:"
-            echo "  -p, --port PORT    Port to listen on (default: 5050)"
+            echo "  -p, --port PORT    Port to listen on (default: 6969)"
             echo "  -H, --host HOST    Host to bind to (default: 0.0.0.0)"
             echo "  -d, --debug        Run in debug mode (Flask dev server)"
             echo "  --https            Enable HTTPS with self-signed certificate"

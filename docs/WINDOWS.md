@@ -16,7 +16,7 @@ install required.
 5. Double-click `intercept.exe`.
 
 A console window opens, the Flask server starts, then point your browser at
-<http://localhost:5050>. Default login is `admin` / `admin` (change it in
+<http://localhost:6969>. Default login is `admin` / `admin` (change it in
 Settings).
 
 ## Zadig — install the WinUSB driver
@@ -44,7 +44,7 @@ exe with Defender, and PyInstaller unpacks the bundled runtime to a temp
 directory each launch.
 
 Windows Firewall will prompt for network access on first launch. INTERCEPT
-serves locally on port 5050 — **Private networks** is enough. **Public
+serves locally on port 6969 — **Private networks** is enough. **Public
 networks** is fine to leave unchecked.
 
 ## What works on Windows
@@ -103,7 +103,7 @@ build, the alternatives are: extract-on-first-run installer (Inno Setup),
 portable folder zip, or code-signing the exe. The first two are tracked but
 not built yet.
 
-### Port 5050 already in use
+### Port 6969 already in use
 
 Pass `--port 5099` (or any free port) when launching from a terminal:
 

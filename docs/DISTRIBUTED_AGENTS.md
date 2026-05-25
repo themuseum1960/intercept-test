@@ -11,7 +11,7 @@ The agent system uses a hub-and-spoke architecture where:
 ```
                     ┌─────────────────────────────────┐
                     │      INTERCEPT CONTROLLER       │
-                    │         (port 5050)             │
+                    │         (port 6969)             │
                     │                                 │
                     │  - Web UI with agent selector   │
                     │  - /controller/manage page      │
@@ -39,7 +39,7 @@ The controller is the main Intercept application:
 ```bash
 cd intercept
 ./setup.sh            # First-time setup (choose install profiles)
-sudo ./start.sh       # Production server on http://localhost:5050
+sudo ./start.sh       # Production server on http://localhost:6969
 ```
 
 ### 2. Configure an Agent
@@ -55,7 +55,7 @@ allowed_ips =
 allow_cors = false
 
 [controller]
-url = http://192.168.1.100:5050
+url = http://192.168.1.100:6969
 api_key = your-secret-key-here
 push_enabled = true
 push_interval = 5
@@ -77,7 +77,7 @@ python intercept_agent.py --config intercept_agent.cfg
 
 ### 4. Register the Agent
 
-Go to `http://controller:5050/controller/manage` and add the agent:
+Go to `http://controller:6969/controller/manage` and add the agent:
 - **Name**: sensor-node-1 (must match config)
 - **Base URL**: http://agent-ip:8020
 - **API Key**: your-secret-key-here (must match config)
@@ -377,7 +377,7 @@ allow_cors = false
 
 [controller]
 # Controller URL (required for push)
-url = http://192.168.1.100:5050
+url = http://192.168.1.100:6969
 
 # API key for authentication
 api_key = your-secret-key

@@ -530,7 +530,7 @@ Deploy lightweight sensor nodes across multiple locations and aggregate data to 
    port = 8020
 
    [controller]
-   url = http://192.168.1.100:5050
+   url = http://192.168.1.100:6969
    api_key = your-secret-key
    push_enabled = true
 
@@ -719,7 +719,7 @@ INTERCEPT can be configured via environment variables:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `INTERCEPT_HOST` | `0.0.0.0` | Server bind address |
-| `INTERCEPT_PORT` | `5050` | Server port |
+| `INTERCEPT_PORT` | `6969` | Server port |
 | `INTERCEPT_DEBUG` | `false` | Enable debug mode |
 | `INTERCEPT_LOG_LEVEL` | `WARNING` | Log level (DEBUG, INFO, WARNING, ERROR) |
 | `INTERCEPT_DEFAULT_GAIN` | `40` | Default RTL-SDR gain |
@@ -733,7 +733,7 @@ Example: `INTERCEPT_PORT=8080 sudo ./start.sh`
 ```
 sudo ./start.sh --help
 
-  -p, --port PORT    Port to listen on (default: 5050)
+  -p, --port PORT    Port to listen on (default: 6969)
   -H, --host HOST    Host to bind to (default: 0.0.0.0)
   -d, --debug        Run in debug mode (Flask dev server)
   --https            Enable HTTPS with self-signed certificate
@@ -749,7 +749,7 @@ sudo ./start.sh --help
 ```
 python3 intercept.py --help
 
-  -p, --port PORT    Port to run server on (default: 5050)
+  -p, --port PORT    Port to run server on (default: 6969)
   -H, --host HOST    Host to bind to (default: 0.0.0.0)
   -d, --debug        Enable debug mode
   --check-deps       Check dependencies and exit

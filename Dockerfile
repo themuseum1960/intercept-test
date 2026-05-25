@@ -295,18 +295,18 @@ RUN find . -name '*.sh' -exec sed -i 's/\r$//' {} +
 RUN mkdir -p /app/data /app/data/weather_sat /app/data/radiosonde/logs
 
 # Expose web interface port
-EXPOSE 5050
+EXPOSE 6969
 EXPOSE 5443
 
 # Environment variables with defaults
 ENV INTERCEPT_HOST=0.0.0.0 \
-    INTERCEPT_PORT=5050 \
+    INTERCEPT_PORT=6969 \
     INTERCEPT_LOG_LEVEL=INFO \
     PYTHONUNBUFFERED=1
 
 # Health check using the new endpoint
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -sf http://localhost:5050/health || exit 1
+    CMD curl -sf http://localhost:6969/health || exit 1
 
 # Run the application
 CMD ["/bin/bash", "start.sh"]

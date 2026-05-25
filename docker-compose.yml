@@ -17,7 +17,7 @@ services:
     pull_policy: never
     container_name: intercept
     ports:
-      - "5050:5050"
+      - "6969:6969"
       # Uncomment for HTTPS support (set INTERCEPT_HTTPS=true below)
       # - "5443:5443"
     # Privileged mode required for USB SDR device access
@@ -37,7 +37,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
       - INTERCEPT_HOST=0.0.0.0
-      - INTERCEPT_PORT=5050
+      - INTERCEPT_PORT=6969
       - INTERCEPT_LOG_LEVEL=INFO
       # HTTPS support (auto-generates self-signed cert)
       # - INTERCEPT_HTTPS=true
@@ -61,7 +61,7 @@ services:
     # network_mode: host
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:5050/health"]
+      test: ["CMD", "curl", "-sf", "http://localhost:6969/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -80,7 +80,7 @@ services:
     depends_on:
       - adsb_db
     ports:
-      - "5050:5050"
+      - "6969:6969"
       # Uncomment for HTTPS support (set INTERCEPT_HTTPS=true below)
       # - "5443:5443"
     # Privileged mode required for USB SDR device access
@@ -96,7 +96,7 @@ services:
     environment:
       - TZ=${TZ:-UTC}
       - INTERCEPT_HOST=0.0.0.0
-      - INTERCEPT_PORT=5050
+      - INTERCEPT_PORT=6969
       - INTERCEPT_LOG_LEVEL=INFO
       # HTTPS support (auto-generates self-signed cert)
       # - INTERCEPT_HTTPS=true
@@ -118,7 +118,7 @@ services:
       # - INTERCEPT_DEFAULT_LON=${INTERCEPT_DEFAULT_LON:-0}
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:5050/health"]
+      test: ["CMD", "curl", "-sf", "http://localhost:6969/health"]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -9,7 +9,7 @@ class TestConfigEnvVars:
         """Test that default values are set."""
         from config import DEBUG, HOST, PORT
 
-        assert PORT == 5050
+        assert PORT == 6969
         assert HOST == '0.0.0.0'
         assert DEBUG is False
 
@@ -42,7 +42,7 @@ class TestConfigEnvVars:
         importlib.reload(config)
 
         # Should fall back to default
-        assert config.PORT == 5050
+        assert config.PORT == 6969
 
         monkeypatch.delenv('INTERCEPT_PORT', raising=False)
         importlib.reload(config)

@@ -64,7 +64,7 @@ allowed_ips = 192.168.1.0/24, 10.0.0.1
 allow_cors = true
 
 [controller]
-url = http://192.168.1.100:5050
+url = http://192.168.1.100:6969
 api_key = secret123
 push_enabled = true
 push_interval = 10
@@ -88,7 +88,7 @@ bluetooth = false
             assert config.port == 8025
             assert '192.168.1.0/24' in config.allowed_ips
             assert config.allow_cors is True
-            assert config.controller_url == 'http://192.168.1.100:5050'
+            assert config.controller_url == 'http://192.168.1.100:6969'
             assert config.controller_api_key == 'secret123'
             assert config.push_enabled is True
             assert config.push_interval == 10

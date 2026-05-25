@@ -4,18 +4,18 @@ INTERCEPT is designed as a **local signal intelligence tool** for personal use o
 
 ## Network Binding
 
-By default, INTERCEPT binds to `0.0.0.0:5050`, making it accessible from any network interface. This is convenient for accessing the web UI from other devices on your local network, but has security implications:
+By default, INTERCEPT binds to `0.0.0.0:6969`, making it accessible from any network interface. This is convenient for accessing the web UI from other devices on your local network, but has security implications:
 
 ### Recommendations
 
-1. **Firewall Rules**: If you don't need remote access, configure your firewall to block external access to port 5050:
+1. **Firewall Rules**: If you don't need remote access, configure your firewall to block external access to port 6969:
    ```bash
    # Linux (iptables)
-   sudo iptables -A INPUT -p tcp --dport 5050 -s 127.0.0.1 -j ACCEPT
-   sudo iptables -A INPUT -p tcp --dport 5050 -j DROP
+   sudo iptables -A INPUT -p tcp --dport 6969 -s 127.0.0.1 -j ACCEPT
+   sudo iptables -A INPUT -p tcp --dport 6969 -j DROP
 
    # macOS (pf)
-   echo "block in on en0 proto tcp from any to any port 5050" | sudo pfctl -ef -
+   echo "block in on en0 proto tcp from any to any port 6969" | sudo pfctl -ef -
    ```
 
 2. **Bind to Localhost**: For local-only access, set the host or use the CLI flag:
@@ -31,7 +31,7 @@ INTERCEPT does **not** include authentication. This is by design for ease of use
 
 1. Use a reverse proxy (nginx, Caddy) with authentication
 2. Use a VPN to access your home network
-3. Use SSH port forwarding: `ssh -L 5050:localhost:5050 your-server`
+3. Use SSH port forwarding: `ssh -L 6969:localhost:6969 your-server`
 
 ## Security Headers
 

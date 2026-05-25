@@ -308,7 +308,7 @@ sudo ./start.sh -p 8080
 sudo ./start.sh --https
 ```
 
-Open **http://localhost:5050** in your browser.
+Open **http://localhost:6969** in your browser.
 
 ---
 

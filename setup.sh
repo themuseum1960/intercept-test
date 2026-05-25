@@ -2029,7 +2029,7 @@ do_health_check() {
   # Port availability
   echo
   info "Port availability..."
-  for port in 5050 30003; do
+  for port in 6969 30003; do
     if ! ss -tlnp 2>/dev/null | grep -q ":${port} " && \
        ! lsof -iTCP:"${port}" -sTCP:LISTEN 2>/dev/null | grep -q "$port"; then
       ok "Port ${port} — available"
@@ -2364,7 +2364,7 @@ do_env_config() {
   case "$cat_choice" in
     1) env_edit_category "Server" \
          "INTERCEPT_HOST|Host to bind|0.0.0.0" \
-         "INTERCEPT_PORT|Port|5050" \
+         "INTERCEPT_PORT|Port|6969" \
          "INTERCEPT_DEBUG|Debug mode (true/false)|false" \
          "INTERCEPT_HTTPS|Enable HTTPS (true/false)|false" ;;
     2) env_edit_category "SDR Defaults" \
@@ -2740,7 +2740,7 @@ do_wizard() {
   echo "Or for quick local dev:"
   echo "  sudo -E venv/bin/python intercept.py"
   echo
-  echo "Then open http://localhost:5050 in your browser"
+  echo "Then open http://localhost:6969 in your browser"
   echo
   echo "============================================"
 

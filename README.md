@@ -88,7 +88,7 @@ Troubleshooting (no decode / noisy decode):
 ## Installation / Windows
 
 Grab `intercept.exe` from the latest [Release](https://github.com/themuseum1960/intercept-test/releases),
-double-click it, then open <http://localhost:5050>. RTL-SDR hardware needs a
+double-click it, then open <http://localhost:6969>. RTL-SDR hardware needs a
 one-time Zadig driver swap. Full guide: [docs/WINDOWS.md](docs/WINDOWS.md).
 
 A few modes (WiFi monitor mode, ACARS, APRS, DSC) can't work on Windows for
@@ -210,7 +210,7 @@ You can also create or edit `.env` manually:
 
 ```bash
 # .env (auto-loaded by start.sh)
-INTERCEPT_PORT=5050
+INTERCEPT_PORT=6969
 INTERCEPT_ADSB_AUTO_START=true
 INTERCEPT_DEFAULT_LAT=51.5074
 INTERCEPT_DEFAULT_LON=-0.1278
@@ -267,7 +267,7 @@ Checks installed tools, SDR devices, port availability, permissions, Python venv
 
 ### Open the Interface
 
-After starting, open **http://localhost:5050** in your browser. The username and password is <b>admin</b>:<b>admin</b>
+After starting, open **http://localhost:6969** in your browser. The username and password is <b>admin</b>:<b>admin</b>
 
 The credentials can be changed in the ADMIN_USERNAME & ADMIN_PASSWORD variables in config.py
 
