@@ -51,8 +51,15 @@ aprs_bp = Blueprint('aprs', __name__, url_prefix='/aprs')
 
 @aprs_bp.before_request
 def _gate_aprs_on_windows():
-    """APRS needs direwolf or multimon-ng (neither ships a Windows binary)
-    and uses POSIX pty pipes."""
+    """Gate APRS on Windows. Two blockers, both fixable later:
+
+    1. The preferred decoder, direwolf, *does* publish Windows builds, but we
+       don't bundle one in tools/windows/ yet. The multimon-ng fallback has no
+       official Windows binary at all.
+    2. The route uses pty.openpty() (line-buffers decoder output to avoid the
+       full-pipe-buffer delay on small APRS packets). pty is POSIX-only and
+       needs a portable subprocess.PIPE rewrite before Windows can work.
+    """
     from flask import jsonify, request
 
     from utils.platform import IS_WINDOWS, windows_not_supported_response
@@ -60,8 +67,10 @@ def _gate_aprs_on_windows():
     if IS_WINDOWS and request.method == 'POST':
         body, status = windows_not_supported_response(
             "APRS packet radio",
-            "direwolf and multimon-ng don't ship Windows binaries through "
-            "their official releases, and the route uses POSIX pty pipes.",
+            "APRS isn't bundled for Windows yet. direwolf does publish Windows "
+            "builds but isn't bundled here, and the APRS route still uses a "
+            "POSIX pseudo-terminal that needs a portable rewrite first. Run "
+            "INTERCEPT on Linux (or via Docker) for this feature.",
         )
         return jsonify(body), status
     return None

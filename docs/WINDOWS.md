@@ -76,7 +76,7 @@ Paste the full path into the Run dialog (Win+R) to open the folder.
 | **AIS vessels** | ✅ Works | bundled `AIS-catcher.exe` |
 | **ACARS** | ❌ Not available | acarsdec has no Windows binary |
 | **VDL2** | ❌ Not available | dumpvdl2 has no Windows binary |
-| **APRS** | ❌ Not available | direwolf doesn't release Windows binaries |
+| **APRS** | ❌ Not available | direwolf ships Windows builds but isn't bundled yet; route also needs a pty→pipe rewrite |
 | **DSC (maritime distress)** | ❌ Not available | vendored Linux-only decoder |
 | **WiFi scanning** | ❌ Not available | Windows drivers don't support monitor mode |
 | **Bluetooth scanning** | ✅ Works | uses bleak + WinRT (native Windows BLE stack) |
