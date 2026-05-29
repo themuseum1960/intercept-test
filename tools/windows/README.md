@@ -15,7 +15,7 @@ which checks this directory before falling back to system PATH.
 | `rtl_tcp.exe` | same | remote SDR |
 | `rtl_eeprom.exe` | same | device admin |
 | `rtl_sdr.exe` | same | low-level IQ capture |
-| `multimon-ng.exe` | [multimon-ng releases](https://github.com/EliasOenal/multimon-ng/releases) | pager, APRS |
+| `multimon-ng.exe` | built from source via `.github/workflows/build-decoders-windows.yml` (no upstream Windows binary) | pager, APRS fallback |
 | `rtl_433.exe` | [rtl_433 releases](https://github.com/merbanan/rtl_433/releases) | sensor, sub-GHz |
 | `AIS-catcher.exe` | [AIS-catcher releases](https://github.com/jvde-github/AIS-catcher/releases) | AIS |
 | `dump1090.exe` | [dump1090 win port](https://github.com/MalcolmRobb/dump1090) | ADS-B |
@@ -23,18 +23,28 @@ which checks this directory before falling back to system PATH.
 | `direwolf.exe` | [direwolf releases](https://github.com/wb2osz/direwolf/releases) | APRS |
 | `satdump.exe` + `satdump-cli.exe` | [SatDump releases](https://github.com/SatDump/SatDump/releases) | weather satellite, wefax |
 
+## Built from source in CI
+
+These decoders have no upstream Windows binary, so we cross-build them from
+source with MSYS2/mingw in `.github/workflows/build-decoders-windows.yml`
+(using the POSIX shims in `wincompat/`), then commit the artifacts here:
+
+| Tool | Mode |
+|---|---|
+| `acarsdec.exe` | ACARS |
+| `dumpvdl2.exe` | VDL2 |
+| `multimon-ng.exe` | Pager, APRS fallback |
+
 ## Tools without a working Windows build
 
-These modes are gated on Windows in `routes/*.py` because the tools they need
-don't (yet) have a usable Windows binary:
+These modes stay gated on Windows in `routes/*.py` because the tools they need
+can't run there:
 
 | Tool | Mode |
 |---|---|
 | `airmon-ng` / `airodump-ng` | WiFi monitor mode (Windows drivers don't support it) |
 | `hcitool` / `bluetoothctl` | Legacy Bluetooth (the v2 `/bt/v2/*` API uses bleak/WinRT and works) |
 | `bin/dsc-decoder` | DSC (vendored Linux ELF, no Windows build) |
-| `acarsdec` | ACARS (no Windows build; gated at runtime) |
-| `dumpvdl2` | VDL2 (no Windows build; gated at runtime) |
 
 ## How discovery works
 
