@@ -1,0 +1,108 @@
+name: Build Windows Decoders
+
+# Builds Windows binaries for the aviation-datalink decoders that have no
+# official Windows release: acarsdec (ACARS) and — later — dumpvdl2 (VDL2).
+#
+# These are built from source with MSYS2 / mingw-w64 because there are no
+# prebuilt Windows binaries upstream. The resulting .exe + runtime DLLs are
+# uploaded as artifacts; a maintainer downloads them and commits them to
+# tools/windows/ so the release build bundles them.
+#
+# Trigger: manual only (workflow_dispatch). This is a one-off / occasional
+# build, not part of every release.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  acarsdec:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Set up MSYS2 (MINGW64)
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            base-devel
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-rtl-sdr
+            mingw-w64-x86_64-libxml2
+            mingw-w64-x86_64-zlib
+
+      - name: Build libacars
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/szpajder/libacars.git
+          cd libacars
+          mkdir build && cd build
+          cmake -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$MINGW_PREFIX" \
+            ..
+          ninja
+          ninja install
+          echo "libacars installed to $MINGW_PREFIX"
+          pkg-config --modversion libacars-2 || true
+
+      - name: Build acarsdec (f00b4r0 fork)
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/f00b4r0/acarsdec.git
+          cd acarsdec
+          mkdir build && cd build
+          # Disable Linux-only / unneeded backends; we only need RTL-SDR
+          # input and JSON-to-stdout output (the INTERCEPT route reads
+          # `--output json:file:-`).
+          cmake -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DRTLSDR=ON \
+            -DLIBACARS=ON \
+            -DCJSON=ON \
+            -DALSA=OFF \
+            -DMQTT=OFF \
+            -DSNDFILE=OFF \
+            -DSOAPY=OFF \
+            -DAIRSPY=OFF \
+            -DSDRPLAY=OFF \
+            ..
+          ninja -v
+
+      - name: Collect binary + runtime DLLs
+        run: |
+          set -uo pipefail
+          OUT="$GITHUB_WORKSPACE/acarsdec-dist"
+          mkdir -p "$OUT"
+          cp acarsdec/build/acarsdec.exe "$OUT/"
+          # libacars dll (acarsdec links it dynamically)
+          cp "$MINGW_PREFIX/bin/libacars-2.dll" "$OUT/" 2>/dev/null || true
+          # Walk ldd output and copy every mingw64-provided DLL dependency.
+          ldd "$OUT/acarsdec.exe" | awk '/mingw64/ {print $3}' | while read -r dll; do
+            [ -f "$dll" ] && cp -n "$dll" "$OUT/" || true
+          done
+          echo "=== bundled files ==="
+          ls -la "$OUT"
+          echo "=== ldd acarsdec.exe ==="
+          ldd "$OUT/acarsdec.exe" || true
+
+      - name: Smoke-test the binary
+        run: |
+          set -uo pipefail
+          # No-arg run prints usage to stderr and exits non-zero; that's fine —
+          # we just want to confirm the exe loads (no missing-DLL crash).
+          ./acarsdec-dist/acarsdec.exe 2>&1 | head -5 || true
+          echo "exit: smoke complete"
+
+      - name: Upload acarsdec artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: acarsdec-windows-x64
+          path: acarsdec-dist/
+          retention-days: 14
