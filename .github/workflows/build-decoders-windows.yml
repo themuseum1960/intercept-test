@@ -4,9 +4,13 @@ name: Build Windows Decoders
 # official Windows release: acarsdec (ACARS) and — later — dumpvdl2 (VDL2).
 #
 # These are built from source with MSYS2 / mingw-w64 because there are no
-# prebuilt Windows binaries upstream. The resulting .exe + runtime DLLs are
-# uploaded as artifacts; a maintainer downloads them and commits them to
-# tools/windows/ so the release build bundles them.
+# prebuilt Windows binaries upstream. The decoders are Linux-first and pull in
+# a few POSIX headers mingw lacks; we satisfy those with the shim headers in
+# tools/windows/wincompat/ (added to the include path) plus -Dffs / -lws2_32.
+#
+# The resulting .exe + runtime DLLs are uploaded as an artifact; a maintainer
+# downloads them and commits them to tools/windows/ so the release build
+# bundles them.
 #
 # Trigger: manual only (workflow_dispatch). This is a one-off / occasional
 # build, not part of every release.
@@ -21,6 +25,11 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
+      - name: Checkout (for wincompat shims)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
       - name: Set up MSYS2 (MINGW64)
         uses: msys2/setup-msys2@v2
         with:
@@ -36,6 +45,8 @@ jobs:
             mingw-w64-x86_64-rtl-sdr
             mingw-w64-x86_64-libxml2
             mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-cjson
+            mingw-w64-x86_64-winpthreads
 
       - name: Build libacars
         run: |
@@ -49,18 +60,25 @@ jobs:
             ..
           ninja
           ninja install
-          echo "libacars installed to $MINGW_PREFIX"
-          pkg-config --modversion libacars-2 || true
+          echo "libacars: $(pkg-config --modversion libacars-2 || echo '??')"
 
       - name: Build acarsdec (f00b4r0 fork)
         run: |
           set -euo pipefail
-          git clone --depth 1 https://github.com/f00b4r0/acarsdec.git
+          # wincompat shims live in the checked-out repo. Convert to a
+          # mingw-friendly (forward-slash) path for the -I flag.
+          WINCOMPAT="$(cygpath -m "$GITHUB_WORKSPACE")/tools/windows/wincompat"
+          echo "wincompat: $WINCOMPAT"
+          ls -la "$WINCOMPAT"
+
+          git clone https://github.com/f00b4r0/acarsdec.git
           cd acarsdec
+          # Pin to the commit the wincompat shims were written against.
+          git checkout 206f733027131d514454c4208d3acc986c9f9a28
           mkdir build && cd build
-          # Disable Linux-only / unneeded backends; we only need RTL-SDR
-          # input and JSON-to-stdout output (the INTERCEPT route reads
-          # `--output json:file:-`).
+          # Only RTL-SDR input + JSON-to-stdout output are needed. The shim
+          # include dir satisfies <sys/socket.h>/<netdb.h>/<err.h>/<sysexits.h>;
+          # -Dffs maps POSIX ffs to the GCC builtin; -lws2_32 provides Winsock.
           cmake -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DRTLSDR=ON \
@@ -72,6 +90,8 @@ jobs:
             -DSOAPY=OFF \
             -DAIRSPY=OFF \
             -DSDRPLAY=OFF \
+            -DCMAKE_C_FLAGS="-I${WINCOMPAT} -Dffs=__builtin_ffs" \
+            -DCMAKE_EXE_LINKER_FLAGS="-lws2_32" \
             ..
           ninja -v
 
@@ -81,7 +101,6 @@ jobs:
           OUT="$GITHUB_WORKSPACE/acarsdec-dist"
           mkdir -p "$OUT"
           cp acarsdec/build/acarsdec.exe "$OUT/"
-          # libacars dll (acarsdec links it dynamically)
           cp "$MINGW_PREFIX/bin/libacars-2.dll" "$OUT/" 2>/dev/null || true
           # Walk ldd output and copy every mingw64-provided DLL dependency.
           ldd "$OUT/acarsdec.exe" | awk '/mingw64/ {print $3}' | while read -r dll; do
@@ -95,9 +114,9 @@ jobs:
       - name: Smoke-test the binary
         run: |
           set -uo pipefail
-          # No-arg run prints usage to stderr and exits non-zero; that's fine —
-          # we just want to confirm the exe loads (no missing-DLL crash).
-          ./acarsdec-dist/acarsdec.exe 2>&1 | head -5 || true
+          # No-arg run prints usage and exits non-zero; we just want to confirm
+          # the exe loads with no missing-DLL error.
+          ./acarsdec-dist/acarsdec.exe 2>&1 | head -8 || true
           echo "exit: smoke complete"
 
       - name: Upload acarsdec artifact
