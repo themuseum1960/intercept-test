@@ -27,6 +27,7 @@ CHANGELOG = [
             "Feat: VDL2 now works on Windows — bundled a from-source dumpvdl2.exe (glib + libacars)",
             "Feat: Pager (POCSAG/FLEX) now works on Windows — bundled a from-source multimon-ng.exe",
             "Feat: APRS now works on Windows — bundled direwolf's official Windows binary",
+            "Feat: ADS-B now works on Windows — bundled gvanem/Dump1090 (user-set gain falls back to AGC for this fork)",
             "Feat: Airband Listen works without ffmpeg (native rtl_fm PCM + WAV header)",
             "Fix: APRS/Pager decoder I/O refactored from POSIX pty to a cross-platform pipe",
             "Fix: correct several inaccurate 'not available on Windows' mode-gate messages",
