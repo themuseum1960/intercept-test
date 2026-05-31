@@ -28,6 +28,8 @@ CHANGELOG = [
             "Fix: VDL2/ACARS/APRS Stop endpoints now idempotent — they previously returned 400 'decoder not running' if the child died on its own (SDR claim conflict, decoder crash) and surfaced a confusing popup, even though the stop semantically succeeded. Stop now also unconditionally releases the SDR registry claim, so a self-terminating child can't leave a stale claim that locks out the next Start.",
             "Feat: detect-server-stopped UI lockout. If the INTERCEPT process is quit or crashes while a browser tab is still open, the UI now shows a full-screen 'INTERCEPT server stopped' overlay with Reconnect / Refresh buttons instead of letting every subsequent action surface a raw 'NetworkError when attempting to fetch resource' alert popup. A 5s heartbeat against /health also catches the case where the user isn't interacting. On recovery, the page auto-reloads to restore SSE streams and state.",
             "Fix: tighten the dump1090 stderr 'failed to open' pattern that previously misidentified a config-file warning as a missing-SDR error",
+            "Fix: 433 MHz Start no longer flashes a burst of toast cards on every launch — the rtl_433 startup banner ('rtl_433 version…', 'Found Rafael Micro…', 'Use \"-F log\"…') was getting parsed as decoder error events. Stderr noise matcher expanded to cover the full banner.",
+            "Fix: drop the developer-only 'Command: rtl_433.exe -d 0 …' info card that appeared every time sensor mode started — it read like a notification but conveyed nothing actionable. The command is now logged to the debug log only.",
         ],
     },
     {
