@@ -292,7 +292,12 @@ def start_sensor() -> Response:
             stderr_thread.daemon = True
             stderr_thread.start()
 
-            app_module.sensor_queue.put({'type': 'info', 'text': f'Command: {full_cmd}'})
+            # NB: deliberately not pushing a "Command: rtl_433 -d 0 ..." info
+            # event to the UI here — it's developer context, not anything an
+            # end user needs to see, and it surfaces as a persistent info-msg
+            # card that reads like an error/notification. The full command is
+            # logged below and returned in the JSON response for debugging.
+            logger.debug(f"Started sensor: {full_cmd}")
 
             return jsonify({'status': 'started', 'command': full_cmd})
 
